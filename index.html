@@ -194,22 +194,21 @@
 </footer>
 
 <script>
-// фото WAE (wae-group.ru). R95 — точное совпадение по модели; для серий SR/SRP точных фото у WAE нет — стоят ближайшие HN, замени при необходимости.
-const IMG_R95 = "https://wae-group.ru/wp-content/uploads/2026/09/r95-20kva-02-scaled.jpg";
-const IMG_2KVA = "https://wae-group.ru/wp-content/uploads/2026/09/4.jpg";
+// фото WAE (wae-group.ru), закреплены по моделям; для SR/SRP точных моделей у WAE нет — ближайшие HN
+const WAE = "https://wae-group.ru/wp-content/uploads/2026/09/";
 
 const DATA = [
-  {art:"СтаНап-HN R95-3KVA",   name:"Стабилизатор напряжения HN — R 95 3KVA (90–270V)",   series:"R95",   va:3000,  volt:"90–270 В", price:8162,  img:IMG_R95},
-  {art:"СтаНап-HN R95-10KVA",  name:"Стабилизатор напряжения HN — R 95 10KVA (90–270V)",  series:"R95",   va:10000, volt:"90–270 В", price:18029, img:IMG_R95},
-  {art:"СтаНап-HN R95-12KVA",  name:"Стабилизатор напряжения HN — R 95 12KVA (90–270V)",  series:"R95",   va:12000, volt:"90–270 В", price:19206, img:IMG_R95},
-  {art:"СтаНап-HN R95-15KVA",  name:"Стабилизатор напряжения HN — R 95 15KVA (90–270V)",  series:"R95",   va:15000, volt:"90–270 В", price:23309, img:IMG_R95},
-  {art:"СтаНап-HN R95-20KVA",  name:"Стабилизатор напряжения HN — R 95 20KVA (90–270V)",  series:"R95",   va:20000, volt:"90–270 В", price:26378, img:IMG_R95},
-  {art:"СтаНап-HN SR45-5KVA",  name:"Стабилизатор напряжения HN — SR 45 5KVA (45–280V)",  series:"SR45",  va:5000,  volt:"45–280 В", price:10857, img:IMG_R95},
-  {art:"СтаНап-HN SR45-15KVA", name:"Стабилизатор напряжения HN — SR 45 15KVA (45–280V)", series:"SR45",  va:15000, volt:"45–280 В", price:22858, img:IMG_R95},
-  {art:"СтаНап-HN SR45-20KVA", name:"Стабилизатор напряжения HN — SR 45 20KVA (45–280V)", series:"SR45",  va:20000, volt:"45–280 В", price:28435, img:IMG_R95},
-  {art:"СтаНап-HN SR95-2000VA",name:"Стабилизатор напряжения HN — SR 95 2000VA (90–270V)",series:"SR95",  va:2000,  volt:"90–270 В", price:5137,  img:IMG_2KVA},
-  {art:"СтаНап-HN SRP45-5KVA", name:"Стабилизатор напряжения HN — SRP 45 5KVA (45–280V)", series:"SRP45", va:5000,  volt:"45–280 В", price:10857, img:IMG_R95},
-  {art:"СтаНап-HN SRP95-5KVA", name:"Стабилизатор напряжения HN — SRP 95 5KVA (90–270V)", series:"SRP95", va:5000,  volt:"90–270 В", price:9966,  img:IMG_R95},
+  {art:"СтаНап-HN R95-3KVA",   name:"Стабилизатор напряжения HN — R 95 3KVA (90–270V)",   series:"R95",   va:3000,  volt:"90–270 В", price:8162,  img:WAE+"r95-20kva-02-scaled.jpg"},
+  {art:"СтаНап-HN R95-10KVA",  name:"Стабилизатор напряжения HN — R 95 10KVA (90–270V)",  series:"R95",   va:10000, volt:"90–270 В", price:18029, img:WAE+"r95-20kva-02-scaled.jpg"},
+  {art:"СтаНап-HN R95-12KVA",  name:"Стабилизатор напряжения HN — R 95 12KVA (90–270V)",  series:"R95",   va:12000, volt:"90–270 В", price:19206, img:WAE+"r95-20kva-02-scaled.jpg"},
+  {art:"СтаНап-HN R95-15KVA",  name:"Стабилизатор напряжения HN — R 95 15KVA (90–270V)",  series:"R95",   va:15000, volt:"90–270 В", price:23309, img:WAE+"r95-20kva-02-scaled.jpg"},
+  {art:"СтаНап-HN R95-20KVA",  name:"Стабилизатор напряжения HN — R 95 20KVA (90–270V)",  series:"R95",   va:20000, volt:"90–270 В", price:26378, img:WAE+"r95-20kva-02-scaled.jpg"},
+  {art:"СтаНап-HN SR45-5KVA",  name:"Стабилизатор напряжения HN — SR 45 5KVA (45–280V)",  series:"SR45",  va:5000,  volt:"45–280 В", price:10857, img:WAE+"r95-20kva-02-scaled.jpg"},
+  {art:"СтаНап-HN SR45-15KVA", name:"Стабилизатор напряжения HN — SR 45 15KVA (45–280V)", series:"SR45",  va:15000, volt:"45–280 В", price:22858, img:WAE+"15_resized.jpg"},
+  {art:"СтаНап-HN SR45-20KVA", name:"Стабилизатор напряжения HN — SR 45 20KVA (45–280V)", series:"SR45",  va:20000, volt:"45–280 В", price:28435, img:WAE+"26.jpg"},
+  {art:"СтаНап-HN SR95-2000VA",name:"Стабилизатор напряжения HN — SR 95 2000VA (90–270V)",series:"SR95",  va:2000,  volt:"90–270 В", price:5137,  img:WAE+"4.jpg"},
+  {art:"СтаНап-HN SRP45-5KVA", name:"Стабилизатор напряжения HN — SRP 45 5KVA (45–280V)", series:"SRP45", va:5000,  volt:"45–280 В", price:10857, img:WAE+"r95-20kva-02-scaled.jpg"},
+  {art:"СтаНап-HN SRP95-5KVA", name:"Стабилизатор напряжения HN — SRP 95 5KVA (90–270V)", series:"SRP95", va:5000,  volt:"90–270 В", price:9966,  img:WAE+"r95-20kva-02-scaled.jpg"},
 ];
 
 const MARKUP = 1.30; // наценка 30%
