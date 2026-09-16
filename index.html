@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СтаНап HN — стабилизаторы напряжения</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF1F3; --surface:#FFFFFF; --surface-2:#F6F8F9;
+    --ink:#1A1D21; --muted:#68727C; --line:#DCE1E5;
+    --amber:#E9A50E; --amber-soft:#FBF1D6;
+    --blue:#145A8A; --blue-soft:#E4EEF5;
+    --teal:#0F7A6B; --teal-soft:#DEEFEB;
+    --shadow:0 1px 2px rgba(20,30,40,.06), 0 8px 24px rgba(20,30,40,.05);
+    --sans:'Inter',system-ui,sans-serif;
+    --grot:'Space Grotesk',var(--sans);
+    --mono:'Space Mono','SF Mono',ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1114; --surface:#171B20; --surface-2:#1D2229;
+      --ink:#E7EBEE; --muted:#8A939C; --line:#282F37;
+      --amber:#F2B417; --amber-soft:#2C2410;
+      --blue:#4FA3DD; --blue-soft:#122530;
+      --teal:#3FBBA6; --teal-soft:#0F2621;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1114; --surface:#171B20; --surface-2:#1D2229;
+    --ink:#E7EBEE; --muted:#8A939C; --line:#282F37;
+    --amber:#F2B417; --amber-soft:#2C2410;
+    --blue:#4FA3DD; --blue-soft:#122530;
+    --teal:#3FBBA6; --teal-soft:#0F2621;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:4rem}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+  /* Header */
+  header{border-bottom:1px solid var(--line);background:var(--surface);
+    position:sticky;top:0;z-index:20;backdrop-filter:blur(6px)}
+  .head-top{display:flex;align-items:center;justify-content:space-between;
+    gap:16px;padding:16px 0}
+  .brand{display:flex;align-items:center;gap:12px}
+  .bolt{width:38px;height:38px;border-radius:9px;background:var(--amber);
+    display:grid;place-items:center;flex:none}
+  .bolt svg{width:20px;height:20px;display:block}
+  .brand h1{font-family:var(--grot);font-size:1.15rem;font-weight:700;
+    letter-spacing:-.01em;line-height:1.1}
+  .brand p{font-size:.8rem;color:var(--muted)}
+  .theme-btn{border:1px solid var(--line);background:var(--surface-2);
+    color:var(--ink);width:38px;height:38px;border-radius:9px;cursor:pointer;
+    display:grid;place-items:center;flex:none;transition:border-color .15s}
+  .theme-btn:hover{border-color:var(--amber)}
+  .theme-btn svg{width:18px;height:18px}
+  .theme-btn .moon{display:none}
+  :root[data-theme="dark"] .theme-btn .sun{display:none}
+  :root[data-theme="dark"] .theme-btn .moon{display:block}
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]) .theme-btn .sun{display:none}
+    :root:not([data-theme="light"]) .theme-btn .moon{display:block}
+  }
+
+  /* Stat strip */
+  .stats{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--line)}
+  .stat{padding:12px 22px 12px 0;margin-right:22px;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:none}
+  .stat .v{font-family:var(--grot);font-weight:600;font-size:1.05rem}
+  .stat .k{font-size:.72rem;color:var(--muted)}
+
+  /* Controls */
+  .controls{padding:22px 0 8px}
+  .row1{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .search{position:relative;flex:1;min-width:220px}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);
+    width:17px;height:17px;color:var(--muted)}
+  .search input{width:100%;padding:11px 12px 11px 38px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink);border-radius:10px;font-size:.9rem;
+    font-family:var(--sans)}
+  .search input:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:transparent}
+  select{padding:11px 34px 11px 14px;border:1px solid var(--line);background:var(--surface);
+    color:var(--ink);border-radius:10px;font-size:.9rem;font-family:var(--sans);cursor:pointer;
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%2368727C' stroke-width='2'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 13px center}
+  select:focus{outline:2px solid var(--blue);outline-offset:1px}
+
+  .filters{display:flex;flex-direction:column;gap:9px}
+  .frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .frow .lbl{font-size:.75rem;color:var(--muted);width:52px;flex:none}
+  .chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);
+    padding:6px 13px;border-radius:100px;font-size:.82rem;cursor:pointer;
+    font-family:var(--sans);transition:.12s;white-space:nowrap}
+  .chip:hover{border-color:var(--muted)}
+  .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+  .count{padding:18px 0 4px;font-size:.82rem;color:var(--muted)}
+
+  /* Grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:0}
+  .photo{position:relative;height:160px;margin:-2px -2px 16px;border-radius:10px;
+    background:var(--surface-2);display:grid;place-items:center;overflow:hidden}
+  .photo img{max-width:100%;max-height:100%;object-fit:contain;display:block;
+    mix-blend-mode:multiply}
+  :root[data-theme="dark"] .photo img{mix-blend-mode:normal}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .photo img{mix-blend-mode:normal}}
+  .photo.noimg::after{content:"";width:44px;height:44px;opacity:.35;
+    background:var(--muted);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13 2 4 14h6l-1 8 9-12h-6z'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13 2 4 14h6l-1 8 9-12h-6z'/%3E%3C/svg%3E") center/contain no-repeat}
+  .card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+  .series{font-family:var(--grot);font-weight:600;font-size:.82rem;letter-spacing:.02em;
+    color:var(--muted)}
+  .vchip{font-size:.72rem;font-weight:500;padding:3px 9px;border-radius:100px}
+  .v-wide{background:var(--teal-soft);color:var(--teal)}
+  .v-std{background:var(--blue-soft);color:var(--blue)}
+  .power{font-family:var(--grot);font-weight:700;line-height:.9;letter-spacing:-.02em;
+    display:flex;align-items:baseline;gap:5px}
+  .power .num{font-size:3.2rem;color:var(--amber)}
+  .power .unit{font-size:1rem;font-weight:500;color:var(--ink)}
+  .name{font-size:.83rem;color:var(--muted);margin:12px 0 14px;min-height:2.5em}
+  .card hr{border:none;border-top:1px solid var(--line);margin:0 0 12px}
+  .meta{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+  .art{font-family:var(--mono);font-size:.72rem;color:var(--muted);word-break:break-all;line-height:1.3}
+  .price{font-family:var(--grot);font-weight:600;font-size:1.15rem;white-space:nowrap}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--muted)}
+  .empty b{color:var(--ink);font-family:var(--grot)}
+
+  footer{max-width:1120px;margin:32px auto 0;padding:20px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:.78rem}
+
+  @media (max-width:560px){
+    .power .num{font-size:2.7rem}
+    .stat{padding-right:16px;margin-right:16px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="head-top">
+      <div class="brand">
+        <span class="bolt"><svg viewBox="0 0 24 24" fill="#1A1D21"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></span>
+        <div>
+          <h1>СтаНап&nbsp;·&nbsp;HN</h1>
+          <p>Стабилизаторы напряжения</p>
+        </div>
+      </div>
+      <button class="theme-btn" id="theme" aria-label="Сменить тему">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="row1">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input type="text" id="q" placeholder="Поиск по артикулу или названию…" autocomplete="off">
+      </div>
+      <select id="sort">
+        <option value="price-asc">Цена ↑</option>
+        <option value="price-desc">Цена ↓</option>
+        <option value="power-desc">Мощность ↓</option>
+        <option value="power-asc">Мощность ↑</option>
+      </select>
+    </div>
+    <div class="filters">
+      <div class="frow" id="series"><span class="lbl">Серия</span></div>
+      <div class="frow" id="volt"><span class="lbl">Вход</span></div>
+    </div>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<footer class="wrap">
+  Прайс от 16 сентября 2026&nbsp;г. · цены в рублях
+</footer>
+
+<script>
+// фото WAE (wae-group.ru). R95 — точное совпадение по модели; для серий SR/SRP точных фото у WAE нет — стоят ближайшие HN, замени при необходимости.
+const IMG_R95 = "https://wae-group.ru/wp-content/uploads/2026/09/r95-20kva-02-scaled.jpg";
+const IMG_2KVA = "https://wae-group.ru/wp-content/uploads/2026/09/8.jpg";
+
+const DATA = [
+  {art:"СтаНап-HN R95-3KVA",   name:"Стабилизатор напряжения HN — R 95 3KVA (90–270V)",   series:"R95",   va:3000,  volt:"90–270 В", price:8162,  img:IMG_R95},
+  {art:"СтаНап-HN R95-10KVA",  name:"Стабилизатор напряжения HN — R 95 10KVA (90–270V)",  series:"R95",   va:10000, volt:"90–270 В", price:18029, img:IMG_R95},
+  {art:"СтаНап-HN R95-12KVA",  name:"Стабилизатор напряжения HN — R 95 12KVA (90–270V)",  series:"R95",   va:12000, volt:"90–270 В", price:19206, img:IMG_R95},
+  {art:"СтаНап-HN R95-15KVA",  name:"Стабилизатор напряжения HN — R 95 15KVA (90–270V)",  series:"R95",   va:15000, volt:"90–270 В", price:23309, img:IMG_R95},
+  {art:"СтаНап-HN R95-20KVA",  name:"Стабилизатор напряжения HN — R 95 20KVA (90–270V)",  series:"R95",   va:20000, volt:"90–270 В", price:26378, img:IMG_R95},
+  {art:"СтаНап-HN SR45-5KVA",  name:"Стабилизатор напряжения HN — SR 45 5KVA (45–280V)",  series:"SR45",  va:5000,  volt:"45–280 В", price:10857, img:IMG_R95},
+  {art:"СтаНап-HN SR45-15KVA", name:"Стабилизатор напряжения HN — SR 45 15KVA (45–280V)", series:"SR45",  va:15000, volt:"45–280 В", price:22858, img:IMG_R95},
+  {art:"СтаНап-HN SR45-20KVA", name:"Стабилизатор напряжения HN — SR 45 20KVA (45–280V)", series:"SR45",  va:20000, volt:"45–280 В", price:28435, img:IMG_R95},
+  {art:"СтаНап-HN SR95-2000VA",name:"Стабилизатор напряжения HN — SR 95 2000VA (90–270V)",series:"SR95",  va:2000,  volt:"90–270 В", price:5137,  img:IMG_2KVA},
+  {art:"СтаНап-HN SRP45-5KVA", name:"Стабилизатор напряжения HN — SRP 45 5KVA (45–280V)", series:"SRP45", va:5000,  volt:"45–280 В", price:10857, img:IMG_R95},
+  {art:"СтаНап-HN SRP95-5KVA", name:"Стабилизатор напряжения HN — SRP 95 5KVA (90–270V)", series:"SRP95", va:5000,  volt:"90–270 В", price:9966,  img:IMG_R95},
+];
+
+const MARKUP = 1.30; // наценка 30%
+const price = d => Math.round(d.price * MARKUP);
+const rub = n => n.toLocaleString("ru-RU") + " ₽";
+const kva = va => va >= 1000 ? (va/1000).toLocaleString("ru-RU") : va;
+const kvaUnit = va => va >= 1000 ? "кВА" : "ВА";
+
+// state
+const st = {q:"", series:new Set(), volt:new Set(), sort:"price-asc"};
+
+// stat strip
+const prices = DATA.map(d=>d.price), powers = DATA.map(d=>d.va);
+document.getElementById("stats").innerHTML = [
+  ["Моделей", DATA.length],
+  ["Мощность", (Math.min(...powers)/1000).toLocaleString("ru-RU")+"–"+(Math.max(...powers)/1000).toLocaleString("ru-RU")+" кВА"],
+  ["Цены", "от "+rub(Math.round(Math.min(...prices)*MARKUP))],
+].map(([k,v])=>`<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`).join("");
+
+// filter chips
+function buildChips(id, values, key){
+  const box = document.getElementById(id);
+  const mk = (label,val)=>{
+    const b=document.createElement("button");
+    b.className="chip"; b.textContent=label; b.setAttribute("aria-pressed","false");
+    b.onclick=()=>{
+      if(val===null){ st[key].clear(); }
+      else { st[key].has(val)?st[key].delete(val):st[key].add(val); }
+      render();
+    };
+    b.dataset.val = val===null?"__all":val;
+    box.appendChild(b);
+  };
+  mk("все", null);
+  values.forEach(v=>mk(v,v));
+}
+buildChips("series", [...new Set(DATA.map(d=>d.series))], "series");
+buildChips("volt", [...new Set(DATA.map(d=>d.volt))], "volt");
+
+function syncChips(id,key){
+  document.querySelectorAll("#"+id+" .chip").forEach(c=>{
+    const v=c.dataset.val;
+    const on = v==="__all" ? st[key].size===0 : st[key].has(v);
+    c.setAttribute("aria-pressed", on?"true":"false");
+  });
+}
+
+// inputs
+document.getElementById("q").addEventListener("input",e=>{st.q=e.target.value.toLowerCase();render();});
+document.getElementById("sort").addEventListener("change",e=>{st.sort=e.target.value;render();});
+
+function render(){
+  let rows = DATA.filter(d=>{
+    if(st.q && !(d.art.toLowerCase().includes(st.q)||d.name.toLowerCase().includes(st.q))) return false;
+    if(st.series.size && !st.series.has(d.series)) return false;
+    if(st.volt.size && !st.volt.has(d.volt)) return false;
+    return true;
+  });
+  const [f,dir] = st.sort.split("-");
+  rows.sort((a,b)=>{
+    const va = f==="price"?a.price:a.va, vb = f==="price"?b.price:b.va;
+    return dir==="asc"?va-vb:vb-va;
+  });
+
+  document.getElementById("count").textContent =
+    rows.length===DATA.length ? `${DATA.length} позиций` : `${rows.length} из ${DATA.length}`;
+
+  const grid = document.getElementById("grid");
+  if(!rows.length){
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><b>Ничего не найдено</b><br>Сбрось фильтры или измени запрос</div>`;
+  } else {
+    grid.innerHTML = rows.map(d=>{
+      const vc = d.volt==="45–280 В" ? "v-wide" : "v-std";
+      return `<article class="card">
+        <div class="photo">
+          <img src="${d.img}" alt="${d.art}" loading="lazy"
+               onerror="this.style.display='none';this.parentElement.classList.add('noimg')">
+        </div>
+        <div class="card-top">
+          <span class="series">${d.series}</span>
+          <span class="vchip ${vc}">${d.volt}</span>
+        </div>
+        <div class="power"><span class="num">${kva(d.va)}</span><span class="unit">${kvaUnit(d.va)}</span></div>
+        <p class="name">Стабилизатор напряжения HN</p>
+        <hr>
+        <div class="meta">
+          <span class="art">${d.art}</span>
+          <span class="price">${rub(price(d))}</span>
+        </div>
+      </article>`;
+    }).join("");
+  }
+  syncChips("series","series"); syncChips("volt","volt");
+}
+render();
+
+// theme
+const tbtn = document.getElementById("theme");
+try{ const saved=localStorage.getItem("stanap-theme"); if(saved) document.documentElement.setAttribute("data-theme",saved); }catch(e){}
+tbtn.onclick=()=>{
+  const cur = document.documentElement.getAttribute("data-theme");
+  const isDark = cur ? cur==="dark" : matchMedia("(prefers-color-scheme:dark)").matches;
+  const next = isDark?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next);
+  try{ localStorage.setItem("stanap-theme",next); }catch(e){}
+};
+</script>
+</body>
+</html>
