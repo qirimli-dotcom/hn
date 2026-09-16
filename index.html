@@ -196,10 +196,10 @@
 const WAE = "https://wae-group.ru/wp-content/uploads/2026/09/";
 
 const DATA = [
-  {art:"СтаНап-HN R95-3KVA",   name:"Стабилизатор напряжения HN — R 95 3KVA (90–270V)",   series:"R95",   va:3000,  volt:"90–270 В", price:8162,  img:"https://ir.ozone.ru/s3/multimedia-1-1/wc1000/9838965961.jpg"},
-  {art:"СтаНап-HN R95-10KVA",  name:"Стабилизатор напряжения HN — R 95 10KVA (90–270V)",  series:"R95",   va:10000, volt:"90–270 В", price:18029, img:"https://ir.ozone.ru/s3/multimedia-1-1/wc1000/9838965961.jpg"},
-  {art:"СтаНап-HN R95-12KVA",  name:"Стабилизатор напряжения HN — R 95 12KVA (90–270V)",  series:"R95",   va:12000, volt:"90–270 В", price:19206, img:"https://ir.ozone.ru/s3/multimedia-1-1/wc1000/9838965961.jpg"},
-  {art:"СтаНап-HN R95-15KVA",  name:"Стабилизатор напряжения HN — R 95 15KVA (90–270V)",  series:"R95",   va:15000, volt:"90–270 В", price:23309, img:"https://ir.ozone.ru/s3/multimedia-1-1/wc1000/9838965961.jpg"},
+  {art:"СтаНап-HN R95-3KVA",   name:"Стабилизатор напряжения HN — R 95 3KVA (90–270V)",   series:"R95",   va:3000,  volt:"90–270 В", price:8162,  img:""},
+  {art:"СтаНап-HN R95-10KVA",  name:"Стабилизатор напряжения HN — R 95 10KVA (90–270V)",  series:"R95",   va:10000, volt:"90–270 В", price:18029, img:""},
+  {art:"СтаНап-HN R95-12KVA",  name:"Стабилизатор напряжения HN — R 95 12KVA (90–270V)",  series:"R95",   va:12000, volt:"90–270 В", price:19206, img:""},
+  {art:"СтаНап-HN R95-15KVA",  name:"Стабилизатор напряжения HN — R 95 15KVA (90–270V)",  series:"R95",   va:15000, volt:"90–270 В", price:23309, img:""},
   {art:"СтаНап-HN R95-20KVA",  name:"Стабилизатор напряжения HN — R 95 20KVA (90–270V)",  series:"R95",   va:20000, volt:"90–270 В", price:26378, img:"https://ir.ozone.ru/s3/multimedia-1-1/wc1000/9838965961.jpg"},
   {art:"СтаНап-HN SR45-5KVA",  name:"Стабилизатор напряжения HN — SR 45 5KVA (45–280V)",  series:"SR45",  va:5000,  volt:"45–280 В", price:10857, img:"https://ir.ozone.ru/s3/multimedia-1-v/wc1000/8359970503.jpg"},
   {art:"СтаНап-HN SR45-15KVA", name:"Стабилизатор напряжения HN — SR 45 15KVA (45–280V)", series:"SR45",  va:15000, volt:"45–280 В", price:22858, img:"https://avatars.mds.yandex.net/get-mpic/10206808/2a0000019a22fc0a82df713f0bf151a54002/optimize"},
@@ -280,11 +280,11 @@ function render(){
   } else {
     grid.innerHTML = rows.map(d=>{
       const vc = d.volt==="45–280 В" ? "v-wide" : "v-std";
+      const photo = d.img
+        ? `<div class="photo"><img src="${d.img}" alt="${d.art}" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('noimg')"></div>`
+        : `<div class="photo noimg"></div>`;
       return `<article class="card">
-        <div class="photo">
-          <img src="${d.img}" alt="${d.art}" loading="lazy"
-               onerror="this.style.display='none';this.parentElement.classList.add('noimg')">
-        </div>
+        ${photo}
         <div class="card-top">
           <span class="series">${d.series}</span>
           <span class="vchip ${vc}">${d.volt}</span>
