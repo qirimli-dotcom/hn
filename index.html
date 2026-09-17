@@ -492,10 +492,9 @@ function renderCart(){
       '<span class="ci-sum">'+rub(sum)+'</span></div></div>'+
       '<button class="ci-rm" data-rm="'+a+'">убрать</button></div>';
   }).join("");
-  const total=cartTotal(), vat=Math.round(total-total/(1+VAT_RATE));
+  const total=cartTotal();
   cartFoot.innerHTML=
     '<div class="tot-row"><span>Позиций</span><span>'+items.length+' / '+cartCount()+' шт</span></div>'+
-    '<div class="tot-row"><span>в т.ч. НДС 22%</span><span>'+rub(vat)+'</span></div>'+
     '<div class="tot-row grand"><span>Итого</span><span>'+rub(total)+'</span></div>'+
     '<button class="btn-primary" id="toCheckout">Оформить заказ</button>'+
     '<button class="btn-ghost" id="clearCart">Очистить корзину</button>';
@@ -517,7 +516,7 @@ function showCheckout(){
   cartBody.innerHTML=
     '<button class="co-back" id="coBack">← назад к корзине</button>'+
     '<div class="co-field"><label>Компания / имя *</label><input id="coName" type="text" placeholder="ООО «...» или ФИО"></div>'+
-    '<div class="co-field"><label>Телефон *</label><input id="coPhone" type="tel" placeholder="+7 ..."></div>'+
+    '<div class="co-field"><label>Телефон *</label><input id="coPhone" type="tel" inputmode="tel" placeholder="+7 (900) 000-00-00"></div>'+
     '<div class="co-field"><label>E-mail для связи</label><input id="coEmail" type="email" placeholder="you@mail.ru"></div>'+
     '<div class="co-field"><label>Комментарий</label><textarea id="coComment" rows="3" placeholder="доставка, сроки, пожелания"></textarea></div>';
   const total=cartTotal();
@@ -529,19 +528,44 @@ function showCheckout(){
   document.getElementById("coBack").onclick=renderCart;
   document.getElementById("sendOrder").onclick=sendOrder;
   document.getElementById("copyOrder").onclick=copyOrder;
+  const ph=document.getElementById("coPhone");
+  ph.value="+7 ";
+  ph.addEventListener("input",()=>{ ph.value=formatPhone(ph.value); ph.style.borderColor=""; });
+  ph.addEventListener("focus",()=>{ if(ph.value.replace(/\D/g,"").length<=1) ph.value="+7 "; });
+}
+function formatPhone(v){
+  let d=v.replace(/\D/g,"");
+  if(d[0]==="8") d="7"+d.slice(1);
+  if(d[0]!=="7") d="7"+d;
+  d=d.slice(0,11);
+  const r=d.slice(1);
+  let out="+7";
+  if(r.length){
+    out+=" ("+r.slice(0,3);
+    if(r.length>=3){ out+=") "+r.slice(3,6);
+      if(r.length>=6){ out+="-"+r.slice(6,8);
+        if(r.length>=8){ out+="-"+r.slice(8,10); } } }
+  }
+  return out;
 }
 function val(id){ const el=document.getElementById(id); return el?el.value:""; }
 function orderText(){
   const items=Object.entries(cart).filter(([a,q])=>q>0&&byArt[a]);
   let t="Заказ — стабилизаторы HN\n========================\n";
   items.forEach(([a,q],i)=>{ const d=byArt[a]; t+=(i+1)+". "+a+" — "+q+" шт × "+rub(price(d))+" = "+rub(price(d)*q)+"\n"; });
-  const total=cartTotal(), vat=Math.round(total-total/(1+VAT_RATE));
-  t+="------------------------\nИтого: "+rub(total)+" (в т.ч. НДС 22%: "+rub(vat)+")\n========================\n";
+  const total=cartTotal();
+  t+="------------------------\nИтого: "+rub(total)+"\n========================\n";
   t+="Компания/имя: "+val("coName")+"\nТелефон: "+val("coPhone")+"\nE-mail: "+val("coEmail")+"\nКомментарий: "+val("coComment")+"\n";
   return t;
 }
 function validate(){
-  if(!val("coName").trim()||!val("coPhone").trim()){ alert("Заполни компанию/имя и телефон."); return false; }
+  if(!val("coName").trim()){ alert("Укажи компанию или имя."); return false; }
+  const d=val("coPhone").replace(/\D/g,"");
+  if(d.length!==11){
+    const ph=document.getElementById("coPhone"); if(ph){ ph.style.borderColor="#c0392b"; ph.focus(); }
+    alert("Проверь телефон — нужно 11 цифр: +7 и ещё 10.");
+    return false;
+  }
   return true;
 }
 async function sendOrder(){
@@ -559,7 +583,9 @@ async function sendOrder(){
     const r=await fetch(FORM_ENDPOINT,{method:"POST",
       headers:{"Content-Type":"application/json","Accept":"application/json"},
       body:JSON.stringify(payload)});
-    if(!r.ok) throw new Error("status "+r.status);
+    let ok=r.ok;
+    try{ const j=await r.json(); if("success" in j) ok=(j.success===true||j.success==="true"); }catch(_){}
+    if(!ok) throw new Error("send failed");
     orderSuccess();
   }catch(e){
     btn.disabled=false; btn.textContent=orig; orderFallback();
